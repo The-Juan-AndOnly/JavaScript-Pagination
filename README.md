@@ -1,3 +1,3 @@
-**_ Treehouse Pagination Project _**
+### Treehouse Pagination Project
 
 Test
