@@ -34,7 +34,7 @@ const resultPerPage = 10;
        "invoke" the function 
 ***/
 
-// showPage function which takes in 2 parameters (the list of students and page to be display. By defauly page is set to be page 1)
+// showPage function which takes in 2 parameters (the list of students and page to be display. By default page is set to be page 1)
 const showPage = (students, page = 1) => {
   let firstOnPage = page * resultPerPage - resultPerPage;
   let lastOnPage = page * resultPerPage;
@@ -54,47 +54,71 @@ const showPage = (students, page = 1) => {
 ***/
 
 const appendPageLinks = students => {
-  const maxPages = Math.ceil(students.length / resultPerPage);
+  const maxPages = Math.ceil(students.length / resultPerPage); // Determines the max amount of pages to be created
   const page = document.querySelector('.page');
   const paginationDiv = document.createElement('div');
   paginationDiv.className = 'pagination';
   const paginationList = document.createElement('ul');
 
-  //   Loop through and assign pages
+  //   Loop through and assign pages and links
   for (x = 1; x <= maxPages; x++) {
     const paginationItem = document.createElement('li');
     const paginationLink = document.createElement('a');
     paginationLink.textContent = x;
     paginationItem.appendChild(paginationLink);
     paginationList.appendChild(paginationItem);
-    paginationLink.addEventListener('click', e => {
-      showPage(students, e.target.textContent);
-    });
+    //event listener when clicked will call the showpages function
   }
   paginationDiv.appendChild(paginationList);
   page.appendChild(paginationDiv);
+
+  paginationList.addEventListener('click', e => {
+    const links = document.querySelectorAll('a');
+    for (let i = 0; i < links.length; i++) {
+      links[i].classList.remove('active');
+    }
+    e.target.className = 'active';
+    showPage(students, e.target.textContent);
+  });
 };
 
 // Remember to delete the comments that came with this file, and replace them with your own code comments.
 
-const pageHeader = document.querySelector('.page-header');
-const searchForm = document.createElement('form');
-const searchLabel = document.createElement('label');
-const searchInput = document.createElement('input');
-const searchButton = document.createElement('button');
-searchButton.textContent = 'Search';
-searchInput.type = 'text';
-searchInput.value = 'test';
-searchLabel.appendChild(searchInput);
-searchForm.appendChild(searchLabel);
-searchForm.appendChild(searchButton);
-searchForm.className = 'student-search';
-pageHeader.appendChild(searchForm);
+const searchComponent = students => {
+  const pageHeader = document.querySelector('.page-header');
+  const searchForm = document.createElement('form');
+  const searchLabel = document.createElement('label');
+  const searchInput = document.createElement('input');
+  const searchButton = document.createElement('button');
+  searchButton.textContent = 'Search';
+  searchInput.type = 'text';
+  searchInput.value = 'test';
+  searchLabel.appendChild(searchInput);
+  searchForm.appendChild(searchLabel);
+  searchForm.appendChild(searchButton);
+  searchForm.className = 'student-search';
+  pageHeader.appendChild(searchForm);
 
-// Added Event Listener when user clicks on Search button or hit enter on keyboard
-searchForm.addEventListener('submit', e => {
-  e.preventDefault();
-  console.log('working');
+  // Added Event Listener when user clicks on Search button or hit enter on keyboard
+  searchForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const studentNames = students.map(
+      student => student.children[0].children[1].textContent
+    );
+    studentNames.filter(student =>
+      student == searchInput.value
+        ? console.log('Found')
+        : console.log('not Found')
+    );
+  });
+};
+//
+//
+//
+//
+
+document.addEventListener('DOMContentLoaded', () => {
+  showPage(students);
+  appendPageLinks(students);
+  searchComponent(students);
 });
-showPage(students);
-appendPageLinks(students);
