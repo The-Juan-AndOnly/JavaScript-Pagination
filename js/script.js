@@ -2,9 +2,8 @@
 Treehouse Techdegree:
 FSJS project 2 - List Filter and Pagination
 ******************************************/
-   
-// Study guide for this project - https://drive.google.com/file/d/1OD1diUsTMdpfMDv677TfL1xO2CEkykSz/view?usp=sharing
 
+// Study guide for this project - https://drive.google.com/file/d/1OD1diUsTMdpfMDv677TfL1xO2CEkykSz/view?usp=sharing
 
 /*** 
    Add your global variables that store the DOM elements you will 
@@ -17,8 +16,8 @@ FSJS project 2 - List Filter and Pagination
    scoped to that function.
 ***/
 
-
-
+const students = [...document.querySelectorAll('.student-item')];
+const resultPerPage = 10;
 
 /*** 
    Create the `showPage` function to hide all of the items in the 
@@ -35,16 +34,67 @@ FSJS project 2 - List Filter and Pagination
        "invoke" the function 
 ***/
 
+// showPage function which takes in 2 parameters (the list of students and page to be display. By defauly page is set to be page 1)
+const showPage = (students, page = 1) => {
+  let firstOnPage = page * resultPerPage - resultPerPage;
+  let lastOnPage = page * resultPerPage;
+  // Create a loop to hide every student on the page
+  for (x = 0; x < students.length; x++) {
+    students[x].style.display = 'none';
 
-
+    if (x >= firstOnPage && x < lastOnPage) {
+      students[x].style.display = '';
+    }
+  }
+};
 
 /*** 
    Create the `appendPageLinks function` to generate, append, and add 
    functionality to the pagination buttons.
 ***/
 
+const appendPageLinks = students => {
+  const maxPages = Math.ceil(students.length / resultPerPage);
+  const page = document.querySelector('.page');
+  const paginationDiv = document.createElement('div');
+  paginationDiv.className = 'pagination';
+  const paginationList = document.createElement('ul');
 
-
-
+  //   Loop through and assign pages
+  for (x = 1; x <= maxPages; x++) {
+    const paginationItem = document.createElement('li');
+    const paginationLink = document.createElement('a');
+    paginationLink.textContent = x;
+    paginationItem.appendChild(paginationLink);
+    paginationList.appendChild(paginationItem);
+    paginationLink.addEventListener('click', e => {
+      showPage(students, e.target.textContent);
+    });
+  }
+  paginationDiv.appendChild(paginationList);
+  page.appendChild(paginationDiv);
+};
 
 // Remember to delete the comments that came with this file, and replace them with your own code comments.
+
+const pageHeader = document.querySelector('.page-header');
+const searchForm = document.createElement('form');
+const searchLabel = document.createElement('label');
+const searchInput = document.createElement('input');
+const searchButton = document.createElement('button');
+searchButton.textContent = 'Search';
+searchInput.type = 'text';
+searchInput.value = 'test';
+searchLabel.appendChild(searchInput);
+searchForm.appendChild(searchLabel);
+searchForm.appendChild(searchButton);
+searchForm.className = 'student-search';
+pageHeader.appendChild(searchForm);
+
+// Added Event Listener when user clicks on Search button or hit enter on keyboard
+searchForm.addEventListener('submit', e => {
+  e.preventDefault();
+  console.log('working');
+});
+showPage(students);
+appendPageLinks(students);
